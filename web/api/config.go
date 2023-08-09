@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"net/http"
 	"os"
@@ -10,7 +11,7 @@ import (
 
 // @Summary Get config
 // @Description Gets the editable config entries for the panel
-// @Success 200 {object} EditableConfig
+// @Success 200 {object} pufferpanel.EditableConfig
 // @Router /api/config [get]
 // @Security OAuth2Application[none]
 func panelConfig(c *gin.Context) {
@@ -26,31 +27,15 @@ func panelConfig(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, EditableConfig{
-		Themes: ThemeConfig{
+	c.JSON(http.StatusOK, pufferpanel.EditableConfig{
+		Themes: pufferpanel.ThemeConfig{
 			Active:    config.DefaultTheme.Value(),
 			Settings:  config.ThemeSettings.Value(),
 			Available: themes,
 		},
-		Branding: BrandingConfig{
+		Branding: pufferpanel.BrandingConfig{
 			Name: config.CompanyName.Value(),
 		},
 		RegistrationEnabled: config.RegistrationEnabled.Value(),
 	})
 }
-
-type EditableConfig struct {
-	Themes              ThemeConfig    `json:"themes"`
-	Branding            BrandingConfig `json:"branding"`
-	RegistrationEnabled bool           `json:"registrationEnabled"`
-} //@name EditableConfigSettings
-
-type ThemeConfig struct {
-	Active    string   `json:"active"`
-	Settings  string   `json:"settings"`
-	Available []string `json:"available"`
-} //@name ThemeConfig
-
-type BrandingConfig struct {
-	Name string `json:"name"`
-} //@name BrandingConfig

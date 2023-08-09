@@ -25,8 +25,8 @@ func registerInfo(g *gin.RouterGroup) {
 // @Param token formData string true "OAuth2 token"
 // @Param token_type_hint formData string false "Hint for how the token might be used"
 // @Success 200 {object} oauth2.TokenInfoResponse
-// @Failure 400 {object} oauth2.TokenInfoResponse
-// @Failure 401 {object} oauth2.TokenInfoResponse
+// @Failure 400 {object} oauth2.ErrorResponse
+// @Failure 401 {object} oauth2.ErrorResponse
 // @Failure 500 {object} response.Error
 // @Router /oauth2/introspect [post]
 func handleInfoRequest(c *gin.Context) {

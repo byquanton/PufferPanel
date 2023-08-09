@@ -13,41 +13,97 @@
 
 package pufferpanel
 
-type ServerIdResponse struct {
-	Id string `json:"id"`
-} //@name ServerId
-
-type ServerStats struct {
+type Stat struct {
 	Cpu    float64 `json:"cpu"`
 	Memory float64 `json:"memory"`
-} //@name ServerStats
+} //@name Stat
 
-type ServerLogs struct {
+type Log struct {
 	Epoch int64  `json:"epoch"`
 	Logs  string `json:"logs"`
-} //@name ServerLogs
+} //@name Log
 
-type ServerRunning struct {
+type Running struct {
 	Running bool `json:"running"`
-} //@name ServerRunning
+} //@name Running
 
-type ServerData struct {
+type Variables struct {
 	Variables map[string]Variable `json:"data"`
-} //@name ServerData
+} //@name Variables
 
-type ServerDataAdmin struct {
-	*Server
-}
-
-type DaemonRunning struct {
-	Message string `json:"message"`
-} //@name DaemonRunning
-
-type ServerTasks struct {
-	Tasks map[string]ServerTask
-} //@name ServerTasks
+type Tasks struct {
+	Tasks map[string]ServerTask `json:"tasks"`
+} //@name Tasks
 
 type ServerTask struct {
-	IsRunning bool `json:"isRunning"`
+	Running
 	Task
-} //@name ServerTask
+} //@name Task
+
+type OAuthTokenRequest struct {
+	GrantType    string `form:"grant_type"`
+	ClientId     string `form:"client_id"`
+	ClientSecret string `form:"client_secret"`
+	Username     string `form:"username"`
+	Password     string `form:"password"`
+} //@name OAuth2TokenRequest
+
+type OAuthTokenInfoResponse struct {
+	Active bool   `json:"active"`
+	Scope  string `json:"scope,omitempty"`
+} //@name OAuth2TokenInfoResponse
+
+type OAuthTokenResponse struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int64  `json:"expires_in"`
+	Scope       string `json:"scope"`
+} //@name OAuth2TokenResponse
+
+type OAuthErrorResponse struct {
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description"`
+} //@name OAuth2ErrorResponse
+
+type OAuthServerResponse struct {
+	OAuthTokenResponse
+	OAuthErrorResponse
+}
+
+type ErrorResponse struct {
+	Error *Error `json:"error"`
+} //@name ErrorResponse
+
+type Metadata struct {
+	Paging *Paging `json:"paging"`
+} //@name Metadata
+
+type Paging struct {
+	Page    uint  `json:"page"`
+	Size    uint  `json:"pageSize"`
+	MaxSize uint  `json:"maxSize"`
+	Total   int64 `json:"total"`
+} //@name Paging
+
+type Features struct {
+	Features     []string `json:"features"`
+	Environments []string `json:"environments"`
+	OS           string   `json:"os"`
+	Arch         string   `json:"arch"`
+} //@name Features
+
+type EditableConfig struct {
+	Themes              ThemeConfig    `json:"themes"`
+	Branding            BrandingConfig `json:"branding"`
+	RegistrationEnabled bool           `json:"registrationEnabled"`
+} //@name EditableConfigSettings
+
+type ThemeConfig struct {
+	Active    string   `json:"active"`
+	Settings  string   `json:"settings"`
+	Available []string `json:"available"`
+} //@name ThemeConfig
+
+type BrandingConfig struct {
+	Name string `json:"name"`
+} //@name BrandingConfig

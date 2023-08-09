@@ -72,7 +72,7 @@ func RefreshToken() bool {
 		return false
 	}
 
-	var responseData TokenResponse
+	var responseData authServerResponse
 	err = json.NewDecoder(response.Body).Decode(&responseData)
 	if err != nil {
 		logging.Error.Printf("error talking to auth server: %s", err.Error())
@@ -114,19 +114,3 @@ func createRequest(data url.Values) (request *http.Request) {
 	request.Header.Add("Content-Type", binding.MIMEPOSTForm)
 	return
 }
-
-type TokenInfoResponse struct {
-	Active           bool   `json:"active"`
-	Scope            string `json:"scope,omitempty"`
-	Error            string `json:"error,omitempty"`
-	ErrorDescription string `json:"error_description,omitempty"`
-} //@name OAuth2TokenInfoResponse
-
-type TokenResponse struct {
-	AccessToken      string `json:"access_token,omitempty"`
-	TokenType        string `json:"token_type,omitempty"`
-	ExpiresIn        int64  `json:"expires_in,omitempty"`
-	Scope            string `json:"scope"`
-	Error            string `json:"error,omitempty"`
-	ErrorDescription string `json:"error_description,omitempty"`
-} //@name OAuth2TokenResponse

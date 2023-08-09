@@ -1862,10 +1862,7 @@ const docTemplate = `{
                 "summary": "Check daemon status",
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/Empty"
-                        }
+                        "description": "No Content"
                     }
                 }
             }
@@ -1902,13 +1899,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
+                            "$ref": "#/definitions/OAuth2ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenInfoResponse"
+                            "$ref": "#/definitions/OAuth2ErrorResponse"
                         }
                     },
                     "500": {
@@ -1923,6 +1920,9 @@ const docTemplate = `{
         "/oauth2/token": {
             "post": {
                 "description": "Get a OAuth2 token to consume this API",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
                 "summary": "Authenticate",
                 "parameters": [
                     {
@@ -1945,19 +1945,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuth2ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuth2ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/OAuth2TokenResponse"
+                            "$ref": "#/definitions/OAuth2ErrorResponse"
                         }
                     }
                 }
@@ -2267,17 +2267,22 @@ const docTemplate = `{
                 }
             }
         },
-        "OAuth2TokenInfoResponse": {
+        "OAuth2ErrorResponse": {
             "type": "object",
             "properties": {
-                "active": {
-                    "type": "boolean"
-                },
                 "error": {
                     "type": "string"
                 },
                 "error_description": {
                     "type": "string"
+                }
+            }
+        },
+        "OAuth2TokenInfoResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
                 },
                 "scope": {
                     "type": "string"
@@ -2308,12 +2313,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
-                    "type": "string"
-                },
-                "error": {
-                    "type": "string"
-                },
-                "error_description": {
                     "type": "string"
                 },
                 "expires_in": {

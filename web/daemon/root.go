@@ -41,15 +41,15 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 
 // @Summary Check daemon status
 // @Description Check to see if the daemon is online or not
-// @Success 200 {object} pufferpanel.DaemonRunning
+// @Success 200 {object} nil
 // @Router /daemon [get]
 func getStatusGET(c *gin.Context) {
-	c.JSON(http.StatusOK, &pufferpanel.DaemonRunning{Message: "daemon is running"})
+	c.Status(http.StatusOK)
 }
 
 // @Summary Check daemon status
 // @Description Check to see if the daemon is online or not
-// @Success 204 {object} response.Empty
+// @Success 204 {object} nil
 // @Router /daemon [head]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)
@@ -64,7 +64,7 @@ func getFeatures(c *gin.Context) {
 		features = append(features, "docker")
 	}
 
-	c.JSON(http.StatusOK, Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH})
+	c.JSON(http.StatusOK, pufferpanel.Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH})
 }
 
 func testDocker() bool {
@@ -79,10 +79,3 @@ func testDocker() bool {
 	_, err = d.Ping(ctx)
 	return err == nil
 }
-
-type Features struct {
-	Features     []string `json:"features"`
-	Environments []string `json:"environments"`
-	OS           string   `json:"os"`
-	Arch         string   `json:"arch"`
-} //@name Features

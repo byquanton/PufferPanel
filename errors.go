@@ -142,7 +142,8 @@ var ErrMissingBinary = func(expected string) *Error {
 }
 
 func GenerateValidationMessage(err error) error {
-	if errs, ok := err.(validator.ValidationErrors); ok {
+	var errs validator.ValidationErrors
+	if errors.As(err, &errs) {
 		msg := make([]string, 0)
 		for _, e := range errs {
 			t := e.Field() + ": " + e.ActualTag()
@@ -157,26 +158,26 @@ func GenerateValidationMessage(err error) error {
 }
 
 type Error struct {
-	Message string                 `json:"msg,omitempty"`
-	Code    string                 `json:"code,omitempty"`
+	Message string                 `json:"msg"`
+	Code    string                 `json:"code"`
 	Meta    map[string]interface{} `json:"metadata,omitempty"`
-	//error
 } //@name Error
 
-func (ge *Error) GetMessage() string {
+func (ge *Error) RenderMessage() string {
 	return ReplaceTokens(ge.Message, ge.Meta)
 }
 
-func (ge *Error) GetCode() string {
-	return ge.Code
-}
-
 func (ge *Error) Error() string {
-	return ge.GetMessage()
+	return ge.RenderMessage()
 }
 
-func (ge *Error) Is(err *Error) bool {
-	return ge.GetCode() == err.GetCode()
+func (ge *Error) Is(err error) bool {
+	var pe *Error
+	if errors.As(err, &pe) {
+		return ge.Code == pe.Code
+	} else {
+		return false
+	}
 }
 
 func (ge *Error) Metadata(metadata map[string]interface{}) *Error {
@@ -197,7 +198,8 @@ func FromError(err error) *Error {
 		return nil
 	}
 
-	if e, ok := err.(*Error); ok {
+	var e *Error
+	if errors.As(err, &e) {
 		return e
 	}
 	return CreateError(err.Error(), "ErrGeneric")
@@ -205,7 +207,8 @@ func FromError(err error) *Error {
 
 func Recover() {
 	if err := recover(); err != nil {
-		if _, ok := err.(error); !ok {
+		if _, ok := err.(*Error); ok {
+		} else if _, ok := err.(error); !ok {
 			err = errors.New(ToString(err))
 		}
 
